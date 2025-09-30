@@ -1,5 +1,6 @@
 package br.com.plataformaveiculos.api.config;
 
+import br.com.plataformaveiculos.api.repositories.UsuarioRepository;
 import br.com.plataformaveiculos.api.security.SecurityFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,8 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,6 +30,9 @@ public class SecurityConfig {
 
     @Autowired
     private SecurityFilter securityFilter;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository; // Injetamos o repository aqui
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,18 +58,24 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // ESTE BEAN ESTÁ DE VOLTA E AGORA CORRIGIDO
+    // Agora que 'Usuario' implementa 'UserDetails', este Bean funciona corretamente
+    // e quebra o ciclo de dependência, pois ensina o Spring a encontrar os usuários
+    // da maneira correta para a autenticação.
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> usuarioRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o e-mail: " + username));
+    }
+
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
-
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
         configuration.setAllowedHeaders(List.of("*"));
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
