@@ -4,6 +4,8 @@ import br.com.plataformaveiculos.api.entities.Veiculo;
 import br.com.plataformaveiculos.api.repositories.VeiculoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import br.com.plataformaveiculos.api.entities.Usuario;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -18,10 +20,15 @@ public class VeiculoController {
     public List<Veiculo> listarTodos() {
 
         return veiculoRepository.findAll();
+
     }
 
     @PostMapping
-    public Veiculo cadastrar(@RequestBody Veiculo veiculo) {
+    public Veiculo cadastrar(@RequestBody Veiculo veiculo, Authentication authentication) {
+
+        Usuario usuarioLogado = (Usuario) authentication.getPrincipal();
+
+        veiculo.setUsuario(usuarioLogado);
 
         return veiculoRepository.save(veiculo);
     }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../services/api';
 
 const HomePage = () => {
@@ -20,11 +21,17 @@ const HomePage = () => {
     };
 
     fetchVeiculos();
+
   }, []);
 
   return (
     <div>
       <h2>Veículos Disponíveis</h2>
+
+      <Link to="/veiculos/novo">
+        <button>Cadastrar Novo Veículo</button>
+      </Link>
+
       {veiculos.length > 0 ? (
         <ul>
           {/* O .map() serve para transformar cada objeto de veículo em um item de lista */}
