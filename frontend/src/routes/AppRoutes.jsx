@@ -5,6 +5,7 @@ import RegisterPage from '../pages/RegisterPage';
 import LoginPage from '../pages/LoginPage';
 import ProtectedRoute from './ProtectedRoute';
 import HomePage from '../pages/Homepage';
+import AddVehiclePage from '../pages/AddVehiclePage';
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/veiculos/novo"
+          element={
+            <ProtectedRoute>
+              <AddVehiclePage />
             </ProtectedRoute>
           }
         />
