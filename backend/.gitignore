@@ -1,3 +1,10 @@
+# Arquivos de configuração local (com senhas)
+application-local.properties
+
+# Arquivos gerados pelo Docker Compose
+postgres-data/
+
+# Original do Spring
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
